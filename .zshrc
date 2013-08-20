@@ -47,6 +47,26 @@ export JAVA_HOME=/usr/lib/jvm/java-7-sun
 export JRE_HOME=${JAVA_HOME}/jre  
 export CLASSPATH=.:${JAVA_HOME}/lib:${JRE_HOME}/lib  
 export PATH=${JAVA_HOME}/bin:$PATH 
+export PATH=/usr/lib/jvm/adt:$PATH
 export PATH=/home/y:$PATH
 # Customize to your needs...
 export PATH=$PATH:/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
+export MARKPATH=$HOME/.marks
+function jump {
+    cd -P "$MARKPATH/$1" 2>/dev/null || echo "No such mark: $1"
+}
+function mark {
+    mkdir -p "$MARKPATH"; ln -s "$(pwd)" "$MARKPATH/$1"
+}
+function unmark {
+    rm -i "$MARKPATH/$1"
+}
+function marks {
+    ls -l "$MARKPATH" | sed 's/ /  /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
+}
+function _completemarks {
+  reply=($(ls $MARKPATH))
+}
+
+compctl -K _completemarks jump
+compctl -K _completemarks unmark
